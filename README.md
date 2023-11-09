@@ -69,6 +69,32 @@ Creating dump of global objects                               ok
 Creating dump of database schemas                             ok
 Checking for presence of required libraries                   fatal
 ...
+
+cat /data/postgres/16/data/pg_upgrade_output.d/20231109T083947.578/loadable_libraries.txt 
+could not load library "$libdir/plperl": ERROR:  could not access file "$libdir/plperl": No such file or directory
+In database: pglogger
+
+\dL+"
+
+  Name   |  Owner   | Trusted | Internal language |      Call handler      |       Validator        |          Inline handler          | Access privileges |         Description    
+      
+---------+----------+---------+-------------------+------------------------+------------------------+----------------------------------+-------------------+------------------------
+------
+ plperl  | postgres | t       | f                 | plperl_call_handler()  | plperl_validator(oid)  | plperl_inline_handler(internal)  |                   | PL/Perl procedural lang
+uage
+ plperlu | postgres | f       | f                 | plperlu_call_handler() | plperlu_validator(oid) | plperlu_inline_handler(internal) |                   | 
+ plpgsql | postgres | t       | f                 | plpgsql_call_handler() | plpgsql_validator(oid) | plpgsql_inline_handler(internal) |                   | PL/pgSQL procedural lan
+guage
+
+DROP LANGUAGE plperlu;
+DROP EXTENSION plperl;
+
+SELECT oid::regprocedure, * FROM pg_catalog.pg_proc WHERE probin = '$libdir/plperl';
+               oid                
+----------------------------------
+ plperlu_call_handler()
+ plperlu_inline_handler(internal)
+ plperlu_validator(oid)
 </code></pre>
 
 <pre><code>
